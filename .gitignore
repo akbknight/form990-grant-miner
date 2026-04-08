@@ -1,0 +1,19 @@
+# Data files (too large for GitHub)
+*.csv
+*.xlsx
+*.xls
+*.log
+
+# Python env
+.venv312/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Accidental files
+import os.py
+
+# OS
+.DS_Store
+Thumbs.db
