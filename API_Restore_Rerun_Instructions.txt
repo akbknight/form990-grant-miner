@@ -1,0 +1,98 @@
+==============================================================================
+  RERUN INSTRUCTIONS — Form 990 AI Grant Classification Pipeline
+  Generated: 2026-03-31
+==============================================================================
+
+CURRENT STATUS (as of 2026-03-31)
+-----------------------------------
+✓  STEP 1 (Extraction)  — IN PROGRESS via run_streaming_extractor.py
+   18 of 62 ZIP archives fully processed
+   ~4,946,838 rows confirmed extracted across completed ZIPs
+   Projected total: ~9,700,000+ rows
+
+✗  STEP 2 (AI Classification) — BLOCKED
+   Reason: Anthropic API credit balance depleted
+   Fix: Add credits at https://console.anthropic.com → Plans & Billing
+   Estimated API cost: ~$2.40/million rows (Haiku model) = ~$23 for full dataset
+
+==============================================================================
+STEP 1 — FULL DATA EXTRACTION (run now, no API needed)
+==============================================================================
+
+Prerequisite: None — uses local ZIP files only.
+
+Command:
+    cd "c:\Users\Akshay Kumar\Downloads\06_Projects_and_Code\Pythin code to extract data from form 990"
+    .venv312\Scripts\python.exe run_streaming_extractor.py
+
+What it does:
+- Processes all 62 ZIP archives (IRS TEOS XML files, 2019–2026 tax years)
+- Writes rows to form990_streaming_output.csv as it goes (resume-safe)
+- Applies keyword-based classification (Jews / Non jews / Miscellaneous)
+- Auto-splits output into Excel files:
+    AI_Extracted_Data_Full_Part1.xlsx  (rows 1–900,000)
+    AI_Extracted_Data_Full_Part2.xlsx  (rows 900,001–1,800,000)
+    ... and so on
+
+Runtime: ~4–8 hours (reading ~20 GB of ZIP data)
+Resume: If interrupted, re-running picks up from where the CSV left off.
+
+==============================================================================
+STEP 2 — AI CLASSIFICATION (run after API credits are restored)
+==============================================================================
+
+Prerequisite: Anthropic API credits added.
+Input: form990_streaming_output.csv (produced by Step 1)
+
+Update categorize_grants.py INPUT_EXCEL_PATH to point at the CSV, then:
+
+    Windows PowerShell:
+        $env:ANTHROPIC_API_KEY = "sk-ant-..."
+        .venv312\Scripts\python.exe categorize_grants.py
+
+    Windows Command Prompt:
+        set ANTHROPIC_API_KEY=sk-ant-...
+        .venv312\Scripts\python.exe categorize_grants.py
+
+What it does:
+- Reads every row from form990_streaming_output.csv
+- Sends Recipient Name + Description to Claude API for classification
+- Writes categorized_grants_output.csv with "Expense Type" and "AI Explanation"
+- Resume-safe: skips rows where Expense Type is already filled
+- Auto-saves every 500 rows
+
+Output: categorized_grants_output.csv
+
+==============================================================================
+STEP 3 — BUILD FINAL EXCEL DELIVERABLE
+==============================================================================
+
+After Step 2 completes:
+
+    .venv312\Scripts\python.exe build_boss_excel.py
+
+This will produce:  AI_Extracted_Data_Current_Status.xlsx
+(with Summary sheet, Data Dictionary, and full classified Grant Data)
+
+==============================================================================
+FILE INVENTORY
+==============================================================================
+
+  form990_to_excel.py               Original extractor (saves to CSV)
+  run_streaming_extractor.py        NEW streaming extractor — use this going forward
+  categorize_grants.py              AI classifier (requires API key + credits)
+  build_boss_excel.py               Builds professional Excel from extracted data
+  categorize_keywords.py            Keyword-only classifier (no API, instant)
+  API_Restore_Rerun_Instructions.txt  This file
+
+  form990_extracted_output.xlsx     24,124-row sample (March 29 partial run)
+  AI_Extracted_Data_Current_Status.xlsx  Boss-ready status workbook (current)
+  form990_streaming_output.csv      Full dataset CSV (produced by streaming run)
+  AI_Extracted_Data_Full_Part*.xlsx  Final split Excel files (produced after full run)
+
+==============================================================================
+CONTACT / SUPPORT
+==============================================================================
+Pipeline built with Claude Code (Anthropic)
+Data source: IRS TEOS — https://www.irs.gov/charities-non-profits/tax-exempt-organization-search
+==============================================================================

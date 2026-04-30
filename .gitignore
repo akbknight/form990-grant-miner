@@ -1,0 +1,31 @@
+# Data files (too large for GitHub)
+*.csv
+*.xlsx
+*.xls
+*.log
+*.db
+*.sqlite
+*.sqlite3
+*.zip
+
+# Python env
+.venv312/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Accidental files
+import os.py
+
+# Secrets and local app config
+.env
+.env.*
+!.env.example
+standalone_pipeline/venv/
+.streamlit/secrets.toml
+workspace_data/
+
+# OS
+.DS_Store
+Thumbs.db

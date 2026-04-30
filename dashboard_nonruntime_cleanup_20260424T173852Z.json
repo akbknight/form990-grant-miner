@@ -1,0 +1,67 @@
+{
+  "timestamp_utc": "2026-04-24T17:38:52.305443+00:00",
+  "deleted_bytes": 2474163402,
+  "deleted_human": "2.30 GB",
+  "retained_dashboard_databases": [
+    "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\databases\\irs990_2023_2024.db",
+    "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\databases\\irs990_pipeline.db"
+  ],
+  "items": [
+    {
+      "path": "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\exports",
+      "exists_before": true,
+      "kind": "dir",
+      "size_bytes": 1133163240,
+      "deleted": true,
+      "deleted_at_utc": "2026-04-24T17:38:52.275999+00:00"
+    },
+    {
+      "path": "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\Boss_Deliverables",
+      "exists_before": true,
+      "kind": "dir",
+      "size_bytes": 736380499,
+      "deleted": true,
+      "deleted_at_utc": "2026-04-24T17:38:52.291562+00:00"
+    },
+    {
+      "path": "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\Boss_Deliverables_2023_2024",
+      "exists_before": true,
+      "kind": "dir",
+      "size_bytes": 604554127,
+      "deleted": true,
+      "deleted_at_utc": "2026-04-24T17:38:52.295890+00:00"
+    },
+    {
+      "path": "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\databases\\irs990_2023_2024.db-shm",
+      "exists_before": true,
+      "kind": "file",
+      "size_bytes": 32768,
+      "deleted": true,
+      "deleted_at_utc": "2026-04-24T17:38:52.298960+00:00"
+    },
+    {
+      "path": "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\databases\\irs990_2023_2024.db-wal",
+      "exists_before": true,
+      "kind": "file",
+      "size_bytes": 0,
+      "deleted": true,
+      "deleted_at_utc": "2026-04-24T17:38:52.301432+00:00"
+    },
+    {
+      "path": "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\databases\\irs990_pipeline.db-shm",
+      "exists_before": true,
+      "kind": "file",
+      "size_bytes": 32768,
+      "deleted": true,
+      "deleted_at_utc": "2026-04-24T17:38:52.302972+00:00"
+    },
+    {
+      "path": "C:\\Users\\Akshay Kumar\\Downloads\\06_Projects_and_Code\\Pythin code to extract data from form 990\\workspace_data\\databases\\irs990_pipeline.db-wal",
+      "exists_before": true,
+      "kind": "file",
+      "size_bytes": 0,
+      "deleted": true,
+      "deleted_at_utc": "2026-04-24T17:38:52.305443+00:00"
+    }
+  ]
+}
