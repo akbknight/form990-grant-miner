@@ -40,6 +40,13 @@ def setup_logging(verbose: bool = False):
 
     log_file = config.LOG_DIR / "pipeline.log"
 
+    # Force UTF-8 on stdout to prevent cp1252 errors on Windows
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except Exception:
+            pass
+
     handlers = [
         logging.StreamHandler(sys.stdout),
         logging.FileHandler(log_file, encoding="utf-8"),
@@ -134,7 +141,7 @@ def print_status(conn):
 
 def run_phase1(args):
     """Phase 1: Audit IRS S3 manifest and download missing files."""
-    log.info("━━━  PHASE 1: AUDIT + DOWNLOAD  ━━━")
+    log.info("---  PHASE 1: AUDIT + DOWNLOAD  ---")
     t0 = time.time()
 
     import audit_downloader
@@ -153,7 +160,7 @@ def run_phase1(args):
 
 def run_phase2(args):
     """Phase 2: Parse verified XML files and store grants in SQLite."""
-    log.info("━━━  PHASE 2: XML EXTRACTION  ━━━")
+    log.info("---  PHASE 2: XML EXTRACTION  ---")
     t0 = time.time()
 
     import extractor
@@ -172,7 +179,7 @@ def run_phase2(args):
 
 def run_phase3(args):
     """Phase 3: AI-classify uncategorized grants (with keyword pre-pass)."""
-    log.info("━━━  PHASE 3: AI CATEGORIZATION  ━━━")
+    log.info("---  PHASE 3: AI CATEGORIZATION  ---")
     t0 = time.time()
 
     import ai_categorizer
@@ -182,8 +189,6 @@ def run_phase3(args):
         phase3_args += ["--dry-run"]
     if args.limit:
         phase3_args += ["--limit", str(args.limit)]
-    if args.workers:
-        phase3_args += ["--workers", str(args.workers)]
 
     ai_categorizer.main(phase3_args)
 

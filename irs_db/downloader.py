@@ -89,26 +89,28 @@ def _download_file(url: str, dest: Path) -> bool:
     Download a file with a progress bar.
     Returns True on success, False on failure.
     """
+    tmp = dest.with_suffix(".tmp")
     try:
-        resp = requests.get(url, stream=True, timeout=60)
-        if resp.status_code == 404:
-            log.warning("  Not found (404): %s", url)
-            return False
-        resp.raise_for_status()
+        with requests.get(url, stream=True, timeout=60) as resp:
+            if resp.status_code == 404:
+                log.warning("  Not found (404): %s", url)
+                return False
+            resp.raise_for_status()
 
-        total = int(resp.headers.get("content-length", 0))
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        tmp = dest.with_suffix(".tmp")
+            total = int(resp.headers.get("content-length", 0))
+            dest.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(tmp, "wb") as f, tqdm(
-            total=total, unit="B", unit_scale=True,
-            desc=dest.name, leave=False
-        ) as bar:
-            for chunk in resp.iter_content(chunk_size=1024 * 1024):
-                f.write(chunk)
-                bar.update(len(chunk))
+            with open(tmp, "wb") as f, tqdm(
+                total=total, unit="B", unit_scale=True,
+                desc=dest.name, leave=False
+            ) as bar:
+                for chunk in resp.iter_content(chunk_size=1024 * 1024):
+                    if not chunk:
+                        continue
+                    f.write(chunk)
+                    bar.update(len(chunk))
 
-        tmp.rename(dest)
+        tmp.replace(dest)
         size_mb = dest.stat().st_size / 1024 / 1024
         log.info("  Downloaded: %s  (%.0f MB)", dest.name, size_mb)
         return True

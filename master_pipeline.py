@@ -50,6 +50,17 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
+from project_utils.paths import (
+    EXPORT_DIR,
+    FORM990_MASTER_CSV_PATH,
+    FORM_990_DIR,
+    FULL_PART_PREFIX_PATH,
+    JEWISH_MASTER_XLSX_PATH,
+    ONEDRIVE_NEW_DATA_DIR,
+    PIPELINE_PROGRESS_LOG_PATH,
+    STATUS_XLSX_PATH,
+)
+
 # ═══════════════════════════════════════════════════════════════════════════════
 # CONFIGURATION — edit these if needed
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -58,18 +69,21 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Folders that contain ZIP files (script searches recursively inside each)
 ZIP_SOURCE_FOLDERS = [
-    os.path.join(BASE_DIR, "Form 990"),
-    os.path.join(BASE_DIR, r"OneDrive_2026-03-29\new data"),
+    str(FORM_990_DIR),
+    str(ONEDRIVE_NEW_DATA_DIR),
 ]
 
-OUTPUT_CSV          = os.path.join(BASE_DIR, "form990_master_output.csv")
-OUTPUT_JEWISH       = os.path.join(BASE_DIR, "Jewish_Grants_Master.xlsx")
-OUTPUT_SUMMARY      = os.path.join(BASE_DIR, "AI_Extracted_Data_Current_Status.xlsx")
-OUTPUT_PART_PREFIX  = os.path.join(BASE_DIR, "AI_Extracted_Data_Full_Part")
-PROGRESS_LOG        = os.path.join(BASE_DIR, "pipeline_progress.log")
+OUTPUT_CSV          = str(FORM990_MASTER_CSV_PATH)
+OUTPUT_JEWISH       = str(JEWISH_MASTER_XLSX_PATH)
+OUTPUT_SUMMARY      = str(STATUS_XLSX_PATH)
+OUTPUT_PART_PREFIX  = str(FULL_PART_PREFIX_PATH)
+PROGRESS_LOG        = str(PIPELINE_PROGRESS_LOG_PATH)
 
 ROWS_PER_EXCEL_PART = 900_000
 MISSING             = "N/A"
+
+os.makedirs(os.path.dirname(PROGRESS_LOG), exist_ok=True)
+os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # LOGGING
@@ -560,7 +574,7 @@ def build_summary_workbook(
 ):
     today = datetime.date.today().strftime("%B %d, %Y")
     parts = sorted([
-        f for f in os.listdir(BASE_DIR)
+        f for f in os.listdir(EXPORT_DIR)
         if f.startswith("AI_Extracted_Data_Full_Part") and f.endswith(".xlsx")
     ])
 
@@ -638,7 +652,7 @@ def build_summary_workbook(
     r = data_row(ws, r, "form990_master_output.csv",
                  f"{total:,} rows — Complete dataset, ~1.4 GB  (use Excel Power Query to connect)")
     for p in parts:
-        mb = os.path.getsize(os.path.join(BASE_DIR, p)) // (1024*1024) if os.path.exists(os.path.join(BASE_DIR, p)) else 0
+        mb = os.path.getsize(EXPORT_DIR / p) // (1024*1024) if (EXPORT_DIR / p).exists() else 0
         r = data_row(ws, r, f"  {p}", f"{mb} MB")
     r += 1
 

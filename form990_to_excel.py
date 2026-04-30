@@ -6,6 +6,12 @@ from typing import Dict, List, Optional
 
 import pandas as pd
 
+from project_utils.paths import (
+    FORM990_EXTRACTED_CSV_PATH,
+    FORM_990_DIR,
+    ONEDRIVE_NEW_DATA_DIR,
+)
+
 
 # =========================
 # USER SETTINGS
@@ -22,12 +28,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 #     which are filtered out automatically by the deduplication logic below.
 #   - "OneDrive_2026-03-29/__Form 990/" contains only error .txt stubs, no ZIPs.
 INPUT_FOLDERS = [
-    os.path.join(BASE_DIR, "Form 990"),
-    os.path.join(BASE_DIR, r"OneDrive_2026-03-29\new data"),
+    str(FORM_990_DIR),
+    str(ONEDRIVE_NEW_DATA_DIR),
 ]
 
 # Output CSV file path (CSV has no row limit; Excel caps at 1,048,576 rows)
-output_excel_path = os.path.join(BASE_DIR, "form990_extracted_output.csv")
+output_excel_path = str(FORM990_EXTRACTED_CSV_PATH)
 
 # Value to use when a field cannot be extracted
 MISSING_VALUE = "N/A"

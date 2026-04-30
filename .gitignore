@@ -3,6 +3,10 @@
 *.xlsx
 *.xls
 *.log
+*.db
+*.sqlite
+*.sqlite3
+*.zip
 
 # Python env
 .venv312/
@@ -13,6 +17,17 @@ __pycache__/
 
 # Accidental files
 import os.py
+
+# Secrets and local app config
+.env
+.env.*
+!.env.example
+.claude/
+standalone_pipeline/venv/
+.streamlit/secrets.toml
+workspace_data/
+_github_publish_*/
+_github_publish_clean_*/
 
 # OS
 .DS_Store

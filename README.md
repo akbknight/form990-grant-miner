@@ -1,159 +1,178 @@
-# form990-grant-miner
+# Grant Atlas 990
 
-> End-to-end data mining pipeline for IRS Form 990 XML filings — extracts 9.7M+ grant records, classifies them as **Jewish / Non-Jewish / Miscellaneous** using pure Python keyword matching. No API. No AI service. No internet required after setup.
+IRS Form 990 grant extraction, warehousing, and analytics for large nonprofit filing datasets.
 
----
+This repository now has three clean layers:
 
-## What This Does
+1. `master_pipeline.py` for local bulk extraction from ZIP archives into CSV and Excel deliverables.
+2. `irs_db/` and `irs_pipeline/` for database-backed ingestion, extraction, and optional AI categorization.
+3. `dashboard_app.py` for a read-only Streamlit dashboard on top of the extracted warehouse.
 
-The IRS publishes every Form 990 (nonprofit tax return) as raw XML files bundled in ZIP archives. Each filing contains a **grant schedule** listing every grant the organization made — recipient name, amount, purpose, location.
+Large runtime artifacts are now consolidated under `workspace_data/` so the repository root stays usable and storage cleanup happens in one place.
 
-This pipeline:
-1. Reads all 62 ZIP archives (IRS TEOS data, tax years 2019–2026)
-2. Parses each XML file and extracts grant records
-3. Classifies every row using keyword matching
-4. Outputs split Excel files (900k rows each) + a single Jewish grants master file
-5. Builds a styled summary workbook with statistics
+## What changed
 
-**Total records processed: 9,693,767 rows**
+- Embedded database credentials were removed from the repository.
+- Export filters are now parsed through an allowlist instead of raw SQL string interpolation.
+- The dashboard reads SQLite in read-only mode and only exposes parameterized filters.
+- The standalone ZIP downloader no longer shares a SQLite connection across worker threads.
+- Safer operational defaults were added for `.env`, `.gitignore`, and the SQLite-to-Postgres transfer tool.
 
----
+## Quick start
 
-## Classification Logic
+### 1. Configure secrets locally
 
-Every row is classified into one of three categories based on the combined text of: `Recipient Name + Description + Primary Subject + Support Strategies`
+Copy `.env.example` to `.env` and set the values you actually use.
 
-| Category | Meaning |
-|----------|---------|
-| **Jews** | Combined text contains one or more Jewish keywords (see full list below) |
-| **Non jews** | Real content present but no Jewish keywords found |
-| **Miscellaneous** | All fields are empty or N/A — insufficient data |
+Required for PostgreSQL-backed flows:
 
-### Jewish Keywords (whole-word, case-insensitive)
+```bash
+IRS_DB_DSN=postgresql://postgres:change_me@127.0.0.1:5432/irs990
+```
 
-| Category | Keywords |
-|----------|---------|
-| Identity | `jew`, `jewish`, `jews`, `judaism`, `hebrew`, `semitic`, `israel`, `israeli` |
-| Institutions | `yeshiva`, `synagogue`, `shul`, `chabad`, `lubavitch`, `hillel`, `JCC`, `hadassah`, `B'nai`, `bnai` |
-| Leadership | `rabbi`, `rabbinical` |
-| Religious texts | `torah`, `talmud`, `kabbalah`, `kosher`, `kippah`, `yarmulke`, `mitzvah`, `shabbat`, `shabbos` |
-| Life events | `bar mitzvah`, `bat mitzvah` |
-| Holidays | `passover`, `pesach`, `hanukkah`, `chanukah`, `rosh hashanah`, `yom kippur`, `sukkot`, `purim` |
-| Places / history | `jerusalem`, `zion`, `zionist`, `kibbutz`, `birthright`, `holocaust`, `shoah` |
-| Cultural | `menorah`, `shalom`, `tikva`, `tikvah`, `mazel` |
-| Org names | `jewish federation`, `jewish community`, `jewish family`, `jewish fund`, `jewish foundation`, `american jewish`, `united jewish`, `friends of israel`, `state of israel`, `american israel` |
+Optional:
 
-> Classification is **fully auditable** — every "Jews" row contains one of the above words explicitly in the IRS filing text. No inference or AI judgment is used.
+```bash
+ANTHROPIC_API_KEY=your_api_key_here
+NEON_DSN=postgresql://user:change_me@your-neon-host/neondb?sslmode=require
+FORM990_DASHBOARD_DB=C:\path\to\warehouse.db
+```
 
----
+### 2. Install dependencies
 
-## Output Files
-
-| File | Description |
-|------|-------------|
-| `Jewish_Grants_Master.xlsx` | All **270,294** Jewish-classified rows in one Excel file (20 MB) |
-| `AI_Extracted_Data_Full_Part1.xlsx` … `Part11.xlsx` | Full 9.7M row dataset split into 900k-row parts |
-| `AI_Extracted_Data_Current_Status.xlsx` | Summary workbook with statistics, data dictionary, classification methodology |
-| `form990_master_output.csv` | Complete dataset, all rows, ~1.4 GB |
-| `pipeline_progress.log` | Detailed extraction log |
-
-> **Why split files?** Excel has a hard row limit of 1,048,576 rows. The full dataset (9.7M rows) requires 11 files. To work with all rows at once, connect to the CSV via Excel Power Query (Data → Get Data → From File → From CSV).
-
----
-
-## Data Columns
-
-| Column | Description |
-|--------|-------------|
-| Grantmaker Name | Legal name of the foundation filing Form 990 |
-| Grantmaker State | U.S. state of the grantmaker |
-| Recipient Name | Organization or person receiving the grant |
-| Recipient City | City of the recipient |
-| Recipient State/Country | State code or country of the recipient |
-| Geography | `United States` for domestic; country name for international |
-| Primary Subject | Auto-classified: Education / Health / Housing / Arts / Food Security / Employment / Environment / Civil Rights / Religion / Human Services |
-| Tax Year | IRS tax year of the filing |
-| Year Authorized | Year grant was authorized |
-| Grant Amount | Dollar amount as stated on Form 990 |
-| Support Strategies | Auto-classified: Capacity building / Core support / Conferences / Internships / Research / Direct services / Leadership development |
-| Description | Grant purpose as written by the grantmaker on Form 990 |
-| Expense Type | Classification: `Jews` / `Non jews` / `Miscellaneous` |
-
----
-
-## Scripts
-
-| Script | Purpose |
-|--------|---------|
-| `master_pipeline.py` | **START HERE** — single script that runs the full pipeline end-to-end |
-| `run_streaming_extractor.py` | ZIP-by-ZIP streaming extractor (resume-safe) |
-| `classify_and_split.py` | Applies keyword classification + splits CSV into Excel parts |
-| `create_jewish_master.py` | Builds `Jewish_Grants_Master.xlsx` from classified CSV |
-| `categorize_grants.py` | Optional: AI-based classification using Anthropic API |
-| `build_final_summary.py` | Rebuilds the summary workbook |
-| `build_boss_excel.py` | Builds styled Excel deliverable |
-| `categorize_keywords.py` | Standalone keyword-only classifier |
-| `form990_to_excel.py` | Original extractor script |
-
----
-
-## How to Run
-
-### Requirements
+Local extraction:
 
 ```bash
 pip install pandas openpyxl
 ```
 
-No API key needed. No internet connection needed after installing packages.
+Database pipeline:
 
-### Run the full pipeline
+```bash
+pip install -r requirements_db.txt
+pip install -r requirements_pipeline.txt
+```
+
+Dashboard:
+
+```bash
+pip install -r requirements_dashboard.txt
+```
+
+### 3. Run the dashboard
+
+```bash
+streamlit run dashboard_app.py
+```
+
+By default the dashboard looks for:
+
+- `workspace_data/databases/irs990_2023_2024.db`
+- `workspace_data/databases/irs990_pipeline.db`
+
+If you want a different SQLite file, set `FORM990_DASHBOARD_DB` in `.env`.
+
+## Main entry points
+
+### Local bulk pipeline
 
 ```bash
 .venv312\Scripts\python.exe master_pipeline.py
 ```
 
-This single command does everything:
-- Extracts all ZIP archives
-- Classifies every row
-- Writes the CSV
-- Writes split Excel part files
-- Writes `Jewish_Grants_Master.xlsx`
-- Writes the summary workbook
+Outputs:
 
-### Resume after interruption
+- `workspace_data/exports/form990_master_output.csv`
+- `workspace_data/exports/Jewish_Grants_Master.xlsx`
+- `workspace_data/exports/AI_Extracted_Data_Current_Status.xlsx`
+- split `workspace_data/exports/AI_Extracted_Data_Full_Part*.xlsx` files
 
-Just re-run the same command. The script checks how many rows are already in the CSV and skips completed work automatically.
+### Database-backed pipeline
 
-### Configuration
+Audit and download:
 
-Edit the top of `master_pipeline.py` to change source folders or output paths:
-
-```python
-ZIP_SOURCE_FOLDERS = [
-    os.path.join(BASE_DIR, "Form 990"),
-    os.path.join(BASE_DIR, "your_other_folder"),
-]
+```bash
+.venv312\Scripts\python.exe -m irs_pipeline.run_pipeline --phase 1
 ```
 
----
+Extract into PostgreSQL:
 
-## Data Source
+```bash
+.venv312\Scripts\python.exe -m irs_pipeline.run_pipeline --phase 2
+```
 
-**IRS TEOS — Tax Exempt Organization Search**
-https://www.irs.gov/charities-non-profits/tax-exempt-organization-search
+Optional AI categorization:
 
-Form 990 XML filings are published publicly by the IRS. Data covers tax years 2019–2026.
+```bash
+.venv312\Scripts\python.exe -m irs_pipeline.run_pipeline --phase 3 --dry-run
+```
 
----
+### Export
 
-## Results Summary
+Safe filtered CSV:
 
-| Metric | Value |
-|--------|-------|
-| Total rows extracted | 9,693,767 |
-| Jewish-classified rows | 270,294 (2.79%) |
-| Non-Jewish rows | 9,419,873 (97.17%) |
-| Miscellaneous | 3,600 (0.04%) |
-| ZIP archives processed | 62 of 62 (100%) |
-| Tax years covered | 2019 – 2026 |
+```bash
+.venv312\Scripts\python.exe -m irs_db.exporter --csv --filter "tax_year=2023 AND expense_type='Jews'"
+```
+
+Supported filter fields:
+
+- `tax_year`
+- `grant_amount`
+- `expense_type`
+- `grantmaker_state`
+- `grantmaker_name`
+- `recipient_name`
+- `primary_subject`
+- `geography`
+
+Supported operators:
+
+- `=`
+- `>=`
+- `<=`
+- `~` for contains search
+
+Examples:
+
+```bash
+.venv312\Scripts\python.exe -m irs_db.exporter --csv --filter "grantmaker_name~foundation"
+.venv312\Scripts\python.exe -m irs_db.exporter --csv --filter "grant_amount>=100000"
+```
+
+## Project layout
+
+```text
+dashboard_app.py              Streamlit UI
+dashboard/                    Dashboard data access and presentation helpers
+irs_db/                       PostgreSQL schema, loader, exporter, downloader
+irs_pipeline/                 Audit/download, extract, AI categorize orchestration
+standalone_pipeline/          Local SQLite pipeline variant
+master_pipeline.py            CSV and Excel bulk pipeline
+sqlite_to_postgres.py         Safer SQLite -> PostgreSQL transfer utility
+workspace_data/               Consolidated ZIPs, databases, exports, and logs
+```
+
+## Security notes
+
+- Never commit `.env` or `.streamlit/secrets.toml`.
+- Use `.env.example` as the template, not as a live credential store.
+- The export CLI no longer accepts arbitrary SQL fragments.
+- The dashboard is intentionally read-only and does not expose path-based file browsing.
+
+## Verification
+
+Run lightweight tests:
+
+```bash
+python -m unittest discover -s tests
+```
+
+Syntax check the dashboard and pipeline modules:
+
+```bash
+python -m py_compile dashboard_app.py
+python -m py_compile irs_pipeline\ai_categorizer.py
+python -m py_compile irs_pipeline\extractor.py
+python -m py_compile irs_db\exporter.py
+```

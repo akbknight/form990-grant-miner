@@ -141,7 +141,7 @@ def process_zip(conn, zip_path: str) -> tuple:
 def run_pipeline(skip_indexes: bool = False):
     log.info("=" * 70)
     log.info("IRS Form 990 -> PostgreSQL Pipeline")
-    log.info("DB: %s", config.DB_DSN.split("@")[-1])   # hide credentials in log
+    log.info("DB: %s", config.redacted_db_dsn())
     log.info("=" * 70)
 
     conn = loader.get_conn()

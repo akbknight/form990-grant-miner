@@ -18,8 +18,10 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 
+from project_utils.paths import FORM990_EXTRACTED_CSV_PATH, FULL_PART_PREFIX_PATH
+
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
-INPUT_CSV   = os.path.join(BASE_DIR, "form990_extracted_output.csv")
+INPUT_CSV   = str(FORM990_EXTRACTED_CSV_PATH)
 ROWS_PER_PART = 900_000
 CHUNK_SIZE    = 100_000   # rows read at a time (keeps RAM low)
 
@@ -65,7 +67,7 @@ EXPENSE_COLORS = {"Jews": "FFF2CC", "Non jews": "E2EFDA", "Miscellaneous": "F2F2
 COL_WIDTHS = [35,16,35,18,22,18,18,12,16,14,22,45,16]
 
 def save_part(rows_buffer: list, part_num: int):
-    out = os.path.join(BASE_DIR, f"AI_Extracted_Data_Full_Part{part_num}.xlsx")
+    out = f"{FULL_PART_PREFIX_PATH}{part_num}.xlsx"
     print(f"\n  Writing Part {part_num}: {len(rows_buffer):,} rows -> {out}")
     t0 = time.time()
 
@@ -172,7 +174,7 @@ def main():
     print(f"  Excel parts written   : {part_num}")
     print(f"\nFiles:")
     for i in range(1, part_num + 1):
-        p = os.path.join(BASE_DIR, f"AI_Extracted_Data_Full_Part{i}.xlsx")
+        p = f"{FULL_PART_PREFIX_PATH}{i}.xlsx"
         if os.path.exists(p):
             size_mb = os.path.getsize(p) / 1024 / 1024
             print(f"  AI_Extracted_Data_Full_Part{i}.xlsx  ({size_mb:.0f} MB)")

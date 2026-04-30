@@ -21,7 +21,12 @@ import psycopg2
 import psycopg2.extras
 from psycopg2.extras import execute_values
 
-from irs_db.config import DB_DSN, SCHEMA_FILE, BATCH_SIZE_FILINGS, BATCH_SIZE_GRANTS
+from irs_db.config import (
+    BATCH_SIZE_FILINGS,
+    BATCH_SIZE_GRANTS,
+    SCHEMA_FILE,
+    get_db_dsn,
+)
 
 log = logging.getLogger(__name__)
 
@@ -31,12 +36,12 @@ log = logging.getLogger(__name__)
 def get_conn():
     """Return a new psycopg2 connection. Caller is responsible for closing."""
     try:
-        conn = psycopg2.connect(DB_DSN)
+        conn = psycopg2.connect(get_db_dsn())
         conn.autocommit = False
         return conn
     except psycopg2.OperationalError as e:
         log.error("Cannot connect to database: %s", e)
-        log.error("Check IRS_DB_DSN env var or config.py DB_DSN setting.")
+        log.error("Check the IRS_DB_DSN environment variable or your .env file.")
         raise
 
 

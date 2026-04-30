@@ -22,9 +22,11 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.utils.dataframe import dataframe_to_rows
 
+from project_utils.paths import FORM990_EXTRACTED_XLSX_PATH, STATUS_XLSX_PATH
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-INPUT_PATH  = os.path.join(BASE_DIR, "form990_extracted_output.xlsx")
-OUTPUT_PATH = os.path.join(BASE_DIR, "AI_Extracted_Data_Current_Status.xlsx")
+INPUT_PATH  = str(FORM990_EXTRACTED_XLSX_PATH)
+OUTPUT_PATH = str(STATUS_XLSX_PATH)
 
 TODAY = datetime.date.today().strftime("%B %d, %Y")
 

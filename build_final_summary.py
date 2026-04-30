@@ -10,9 +10,11 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
+from project_utils.paths import EXPORT_DIR, FORM990_EXTRACTED_XLSX_PATH, STATUS_XLSX_PATH
+
 BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
-SAMPLE_PATH = os.path.join(BASE_DIR, "form990_extracted_output.xlsx")
-OUTPUT_PATH = os.path.join(BASE_DIR, "AI_Extracted_Data_Current_Status.xlsx")
+SAMPLE_PATH = str(FORM990_EXTRACTED_XLSX_PATH)
+OUTPUT_PATH = str(STATUS_XLSX_PATH)
 TODAY       = datetime.date.today().strftime("%B %d, %Y")
 
 # All 62 ZIPs — confirmed complete from extraction log
@@ -171,7 +173,7 @@ def build_summary(ws):
     t2.alignment = Alignment(horizontal="center", vertical="center")
 
     # Count part files
-    parts = [f for f in os.listdir(BASE_DIR) if f.startswith("AI_Extracted_Data_Full_Part") and f.endswith(".xlsx")]
+    parts = [f for f in os.listdir(EXPORT_DIR) if f.startswith("AI_Extracted_Data_Full_Part") and f.endswith(".xlsx")]
     parts.sort()
 
     rows = [
@@ -188,7 +190,7 @@ def build_summary(ws):
         ("Summary Workbook", "AI_Extracted_Data_Current_Status.xlsx  (this file)"),
     ]
     for p in parts:
-        size_mb = os.path.getsize(os.path.join(BASE_DIR, p)) // (1024*1024)
+        size_mb = os.path.getsize(EXPORT_DIR / p) // (1024*1024)
         rows.append((f"  {p}", f"{size_mb} MB — 900,000 rows (last part may be smaller)"))
 
     rows += [

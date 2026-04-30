@@ -26,11 +26,23 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 
+from project_utils.paths import (
+    EXTRACTION_PROGRESS_LOG_PATH,
+    FORM990_STREAMING_CSV_PATH,
+    FORM_990_DIR,
+    FULL_PART_PREFIX_PATH,
+    LOG_DIR,
+    ONEDRIVE_NEW_DATA_DIR,
+)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_CSV   = os.path.join(BASE_DIR, "form990_streaming_output.csv")
-PROGRESS_LOG = os.path.join(BASE_DIR, "extraction_progress.log")
+OUTPUT_CSV   = str(FORM990_STREAMING_CSV_PATH)
+PROGRESS_LOG = str(EXTRACTION_PROGRESS_LOG_PATH)
 ROWS_PER_EXCEL_PART = 900_000
 MISSING_VALUE = "N/A"
+
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -53,8 +65,8 @@ TARGET_COLUMNS = [
 
 # ----- ZIP sources (deduped) -----
 INPUT_FOLDERS = [
-    os.path.join(BASE_DIR, "Form 990"),
-    os.path.join(BASE_DIR, r"OneDrive_2026-03-29\new data"),
+    str(FORM_990_DIR),
+    str(ONEDRIVE_NEW_DATA_DIR),
 ]
 
 # ----- Keyword classifier -----
@@ -227,7 +239,7 @@ def collect_zips(input_folders):
 
 
 def write_excel_part(rows_chunk, part_num, total_so_far):
-    out_path = os.path.join(BASE_DIR, f"AI_Extracted_Data_Full_Part{part_num}.xlsx")
+    out_path = f"{FULL_PART_PREFIX_PATH}{part_num}.xlsx"
     log.info("Writing Excel Part %d (%d rows) → %s", part_num, len(rows_chunk), out_path)
     df = pd.DataFrame(rows_chunk, columns=TARGET_COLUMNS)
 

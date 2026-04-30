@@ -7,16 +7,25 @@ Single source of truth for all configuration across all three phases.
 import os
 from pathlib import Path
 
-BASE_DIR  = Path(__file__).parent.parent
-DATA_DIR  = BASE_DIR / "irs_s3_data"          # where individual XML files live
-DB_SQLITE = BASE_DIR / "irs_pipeline.db"      # SQLite for manifest + AI cache
-LOG_DIR   = BASE_DIR / "logs"
+from dotenv import load_dotenv
+
+from project_utils.paths import (
+    IRS_PIPELINE_LOG_DIR,
+    IRS_PIPELINE_XML_DATA_DIR,
+    PIPELINE_SQLITE_DB_PATH,
+    PROJECT_ROOT,
+    ensure_data_layout,
+)
+from project_utils.security import getenv_str, redact_dsn
+
+BASE_DIR = PROJECT_ROOT
+DATA_DIR = IRS_PIPELINE_XML_DATA_DIR          # where individual XML files live
+DB_SQLITE = PIPELINE_SQLITE_DB_PATH           # SQLite for manifest + AI cache
+LOG_DIR = IRS_PIPELINE_LOG_DIR
+load_dotenv(BASE_DIR / ".env")
 
 # ── PostgreSQL (existing database) ────────────────────────────────────────────
-DB_DSN = os.getenv(
-    "IRS_DB_DSN",
-    "postgresql://postgres:Akshay@127.0.0.1:5432/irs990"
-)
+DB_DSN = getenv_str("IRS_DB_DSN", getenv_str("DATABASE_URL"))
 
 # ── IRS S3 ─────────────────────────────────────────────────────────────────────
 S3_BUCKET        = "irs-form-990"
@@ -42,6 +51,22 @@ AI_BATCH_SIZE       = 10       # grants per API call (reduces system-prompt over
 AI_MAX_TOKENS       = 1024
 AI_WORKERS          = 3        # parallel API threads (stay under rate limit)
 
+
+def get_db_dsn(required: bool = True) -> str:
+    """Return the configured Postgres DSN, optionally requiring it."""
+    if DB_DSN:
+        return DB_DSN
+    if required:
+        raise RuntimeError(
+            "IRS_DB_DSN is not set. Add it to your environment or .env file."
+        )
+    return ""
+
+
+def redacted_db_dsn() -> str:
+    """Return a masked DSN for logs and status output."""
+    return redact_dsn(DB_DSN)
+
 # Create needed directories
+ensure_data_layout()
 DATA_DIR.mkdir(parents=True, exist_ok=True)
-LOG_DIR.mkdir(parents=True, exist_ok=True)
