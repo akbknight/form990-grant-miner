@@ -1,178 +1,196 @@
-# Grant Atlas 990
+# Grant Atlas 990 & Deborah Philanthropic Intelligence Platform
 
-IRS Form 990 grant extraction, warehousing, and analytics for large nonprofit filing datasets.
+[![IRS 990 Mining Engine](https://img.shields.io/badge/IRS%20990-XML%20Bulk%20Extraction-blue.svg)](https://github.com/akbknight/form990-grant-miner)
+[![GitHub Pages](https://img.shields.io/badge/Live%20Platform-GitHub%20Pages-success.svg)](https://akbknight.github.io/form990-grant-miner/)
+[![Coverage](https://img.shields.io/badge/Filings%20Ingested-9.7M%2B%20Filings-emerald.svg)](https://akbknight.github.io/form990-grant-miner/#/pipeline)
+[![Capital Extracted](https://img.shields.io/badge/Charitable%20Capital-%24550.2B%20Extracted-amber.svg)](https://akbknight.github.io/form990-grant-miner/#/dashboard)
+[![Zero API Extraction](https://img.shields.io/badge/Core%20ETL-Zero%20API%20Cost-indigo.svg)](https://github.com/akbknight/form990-grant-miner)
 
-This repository now has three clean layers:
+An institutional-grade data engineering and philanthropic intelligence platform for extracting, warehousing, and analyzing grant disbursements from IRS Form 990 electronic XML filings (2019–2024).
 
-1. `master_pipeline.py` for local bulk extraction from ZIP archives into CSV and Excel deliverables.
-2. `irs_db/` and `irs_pipeline/` for database-backed ingestion, extraction, and optional AI categorization.
-3. `dashboard_app.py` for a read-only Streamlit dashboard on top of the extracted warehouse.
+The platform operates across two synchronized pillars:
+1. **High-Throughput Python ETL Engine**: Streams bulk IRS S3 electronic filing ZIP archives directly in memory without disk thrash, parsing Schedule I grants across legacy and modern XML schemas into SQLite, DuckDB, and PostgreSQL.
+2. **Grant Atlas & Deborah Analytics Platform (`docs/`)**: An interactive, zero-dependency client Single Page Application deployed to GitHub Pages, featuring multi-view exploration across 12 sectors, funder–recipient relationship cohorts, DAF flow tracing, and a priority Decision Center for mixed/unresolved grant classifications.
 
-Large runtime artifacts are now consolidated under `workspace_data/` so the repository root stays usable and storage cleanup happens in one place.
+---
 
-## What changed
+## System Architecture
 
-- Embedded database credentials were removed from the repository.
-- Export filters are now parsed through an allowlist instead of raw SQL string interpolation.
-- The dashboard reads SQLite in read-only mode and only exposes parameterized filters.
-- The standalone ZIP downloader no longer shares a SQLite connection across worker threads.
-- Safer operational defaults were added for `.env`, `.gitignore`, and the SQLite-to-Postgres transfer tool.
-
-## Quick start
-
-### 1. Configure secrets locally
-
-Copy `.env.example` to `.env` and set the values you actually use.
-
-Required for PostgreSQL-backed flows:
-
-```bash
-IRS_DB_DSN=postgresql://postgres:change_me@127.0.0.1:5432/irs990
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   PILLAR 1: DATA PIPELINE & WAREHOUSE                  │
+│                                                                        │
+│  IRS S3 XML Archives ──► Streaming In-Memory Parser ──► SQLite/Neon PG │
+│  (9.7M+ Filings)          (Schedule I / Part IX)       (Columnar Store)│
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Normalized Schemas & Provenance
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│               PILLAR 2: GRANT ATLAS & ANALYTICS PLATFORM               │
+│                                                                        │
+│  Multi-View SPA Router ──► 12-Sector Explorer ──► Relationship Cohorts │
+│  Decision Center (F12) ──► DAF Flow Tracer    ──► Anti-Double-Counting │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
-Optional:
+---
+
+## Key Features & Meeting Addendum Capabilities (F01–F15)
+
+- **12 Approved Philanthropic Sectors (F01 & F10):** Exhaustive thematic mapping spanning Higher Education, Biomedical Health, Humanitarian Relief, Civic Rights, Jewish Community & Continuity, Environment, and Public Policy with longitudinal trajectories.
+- **EIN Identity Resolution (F02):** Strict 9-digit EIN normalization. Unmatched organization records remain distinct and visible—never merged purely on string similarity.
+- **Commitments vs. Paid Grants Separation (F04):** Unpaid future multi-year grant commitments are strictly tracked separately from current-year cash grant disbursements (`CashGrantAmt`). Unknown commitment values are logged as "Not Reported", never defaulted to zero.
+- **Longitudinal Relationship Ledgers (F05 & F11):** Year-wise pairwise funding histories with full Schedule I purpose text, itemized grant listings, and context-preserving recipient profile drawers.
+- **Retention Cohort Analysis (F06):** Tracks institutional funding continuity across periods into `New` (first-time grantees), `Retained` (continuous support), and `Not Observed` (not seen in cycle; flagged without asserting cessation).
+- **DAF & Intermediary Flow Tracing (F08):** Directional tracking of Donor-Advised Funds (Vanguard Charitable, Fidelity Charitable, Jewish Communal Fund) with mandatory **Anti-Double-Counting Invariants** preventing pass-through inflation.
+- **Scope Switcher (F09 & F13):** Dynamic toggle between aggregate US charitable distributions and focused communal giving scopes.
+- **Decision Center for Mixed / Unresolved Grants (F12):** Priority governance console for reviewing ambiguous classifications, enforcing required reviewer identity, justification reasons, and reversible audit logs.
+- **Interactive DataOps Architecture (F14):** Inline vector SVG architecture diagram with worker benchmarks and database partition specifications.
+
+---
+
+## Live Web Application
+
+The interactive web analytics platform is hosted statically via GitHub Pages from `docs/`:
+
+- **Live URL:** [https://akbknight.github.io/form990-grant-miner/](https://akbknight.github.io/form990-grant-miner/)
+- **Routes:**
+  - `#/dashboard` — Executive Telemetry, KPI Summary Cards, Longitudinal Trends, Sortable Funder & Recipient Tables.
+  - `#/sectors` — 12-Sector Thematic Explorer, Trajectories, Top Grantmakers & Grantees.
+  - `#/relationships` — Funder ↔ Grantee Ledgers, Retention Cohorts, DAF Flow Tracing, and Recipient Profile Drawer.
+  - `#/decisions` — Priority Decision Center for Unresolved & Mixed Classifications.
+  - `#/pipeline` — 3-Tier Streaming Architecture Diagram, Worker Benchmarks, Database Partition Specs.
+- **Themes:** Supports OLED Obsidian Dark Mode (`#0f1117`) and Apple-Grade Light Mode (`#f8fafc`) with persistent state.
+
+---
+
+## Quick Start: Python Pipeline & Local Warehouse
+
+### 1. Configure Secrets Locally
+
+Copy `.env.example` to `.env` and configure the database connection you wish to use:
 
 ```bash
+# Required for PostgreSQL-backed flows:
+IRS_DB_DSN=postgresql://postgres:change_me@127.0.0.1:5432/irs990
+
+# Optional:
 ANTHROPIC_API_KEY=your_api_key_here
 NEON_DSN=postgresql://user:change_me@your-neon-host/neondb?sslmode=require
-FORM990_DASHBOARD_DB=C:\path\to\warehouse.db
+FORM990_DASHBOARD_DB=workspace_data/databases/irs990_pipeline.db
 ```
 
-### 2. Install dependencies
+### 2. Install Dependencies
 
-Local extraction:
-
+Local extraction & bulk Excel generation:
 ```bash
 pip install pandas openpyxl
 ```
 
-Database pipeline:
-
+Database warehouse pipeline:
 ```bash
 pip install -r requirements_db.txt
 pip install -r requirements_pipeline.txt
 ```
 
-Dashboard:
-
+Streamlit dashboard:
 ```bash
 pip install -r requirements_dashboard.txt
 ```
 
-### 3. Run the dashboard
+### 3. Run the Local Streamlit Dashboard
 
 ```bash
 streamlit run dashboard_app.py
 ```
 
-By default the dashboard looks for:
+---
 
-- `workspace_data/databases/irs990_2023_2024.db`
-- `workspace_data/databases/irs990_pipeline.db`
+## Main Entry Points & CLI Operations
 
-If you want a different SQLite file, set `FORM990_DASHBOARD_DB` in `.env`.
-
-## Main entry points
-
-### Local bulk pipeline
+### Local Bulk Extraction Pipeline
+Processes raw TEOS XML ZIP archives directly into clean CSV and Excel deliverables:
 
 ```bash
-.venv312\Scripts\python.exe master_pipeline.py
+python master_pipeline.py
 ```
 
-Outputs:
+Generated deliverables in `workspace_data/exports/`:
+- `form990_master_output.csv` — Full extracted grant matrix.
+- `Jewish_Grants_Master.xlsx` — Partitioned communal scope dataset.
+- `AI_Extracted_Data_Current_Status.xlsx` — Classified metadata.
+- `AI_Extracted_Data_Full_Part*.xlsx` — Chunked workbooks (900,000 rows each).
 
-- `workspace_data/exports/form990_master_output.csv`
-- `workspace_data/exports/Jewish_Grants_Master.xlsx`
-- `workspace_data/exports/AI_Extracted_Data_Current_Status.xlsx`
-- split `workspace_data/exports/AI_Extracted_Data_Full_Part*.xlsx` files
+### Database-Backed Ingestion Pipeline
+Phase 1: Audit and download missing IRS XML archives:
+```bash
+python -m irs_pipeline.run_pipeline --phase 1
+```
 
-### Database-backed pipeline
+Phase 2: Extract Schedule I grants into PostgreSQL / SQLite:
+```bash
+python -m irs_pipeline.run_pipeline --phase 2
+```
 
-Audit and download:
+Phase 3: Optional AI-assisted categorization pass:
+```bash
+python -m irs_pipeline.run_pipeline --phase 3 --dry-run
+```
+
+### Safe Parameterized Exporter
+Export filtered subsets without raw SQL string interpolation:
 
 ```bash
-.venv312\Scripts\python.exe -m irs_pipeline.run_pipeline --phase 1
+python -m irs_db.exporter --csv --filter "tax_year=2023 AND expense_type='Jews'"
+python -m irs_db.exporter --csv --filter "grantmaker_name~foundation"
+python -m irs_db.exporter --csv --filter "grant_amount>=100000"
 ```
 
-Extract into PostgreSQL:
+---
 
-```bash
-.venv312\Scripts\python.exe -m irs_pipeline.run_pipeline --phase 2
-```
-
-Optional AI categorization:
-
-```bash
-.venv312\Scripts\python.exe -m irs_pipeline.run_pipeline --phase 3 --dry-run
-```
-
-### Export
-
-Safe filtered CSV:
-
-```bash
-.venv312\Scripts\python.exe -m irs_db.exporter --csv --filter "tax_year=2023 AND expense_type='Jews'"
-```
-
-Supported filter fields:
-
-- `tax_year`
-- `grant_amount`
-- `expense_type`
-- `grantmaker_state`
-- `grantmaker_name`
-- `recipient_name`
-- `primary_subject`
-- `geography`
-
-Supported operators:
-
-- `=`
-- `>=`
-- `<=`
-- `~` for contains search
-
-Examples:
-
-```bash
-.venv312\Scripts\python.exe -m irs_db.exporter --csv --filter "grantmaker_name~foundation"
-.venv312\Scripts\python.exe -m irs_db.exporter --csv --filter "grant_amount>=100000"
-```
-
-## Project layout
+## Project Structure
 
 ```text
-dashboard_app.py              Streamlit UI
-dashboard/                    Dashboard data access and presentation helpers
-irs_db/                       PostgreSQL schema, loader, exporter, downloader
-irs_pipeline/                 Audit/download, extract, AI categorize orchestration
-standalone_pipeline/          Local SQLite pipeline variant
-master_pipeline.py            CSV and Excel bulk pipeline
-sqlite_to_postgres.py         Safer SQLite -> PostgreSQL transfer utility
-workspace_data/               Consolidated ZIPs, databases, exports, and logs
+├── dashboard_app.py              # Streamlit local warehouse UI
+├── dashboard/                    # Data access and presentation helpers
+├── irs_db/                       # PostgreSQL schema, loader, exporter, downloader
+├── irs_pipeline/                 # S3 audit/downloader, extractor, AI categorizer
+├── standalone_pipeline/          # Self-contained SQLite pipeline
+├── master_pipeline.py            # High-speed in-memory ZIP bulk extractor
+├── sqlite_to_postgres.py         # Transactional SQLite to PostgreSQL transfer utility
+├── workspace_data/               # Consolidated runtime data (ZIPs, DBs, exports, logs)
+│
+└── docs/                         # Live GitHub Pages Web Platform & Documentation
+    ├── index.html                # Interactive SPA platform (5 hash views, dual theme)
+    ├── assets/                   # Vector logos (brand-logo.png, kff-logo.png, etc.)
+    ├── DEBORAH_AUDIT_SYNTHESIS.md# October 2026 audit synthesis & F01-F15 specifications
+    ├── architecture.md           # End-to-end multi-pillar architecture & pipeline specs
+    ├── methodology.md            # Extraction logic, anti-double-counting, & cohort rules
+    ├── data_dictionary.md        # Comprehensive schema specifications & 12-sector taxonomy
+    └── decision_log.md           # System audit and structural decision log
 ```
 
-## Security notes
+---
 
-- Never commit `.env` or `.streamlit/secrets.toml`.
-- Use `.env.example` as the template, not as a live credential store.
-- The export CLI no longer accepts arbitrary SQL fragments.
-- The dashboard is intentionally read-only and does not expose path-based file browsing.
+## Governance & Security Policies
 
-## Verification
+1. **Anti-Double-Counting Invariant:** DAF sponsor inflows and final charity outflows are never merged into the same aggregate pool.
+2. **Confidentiality & Provenance:** Production database server credentials must never be committed or embedded in client static assets. Sample records displayed on static web tiers serve as synthetic validation fixtures until authorized backend DSNs are bound.
+3. **No Unchecked Merges:** Organizations lacking verified EINs are preserved as independent records with review tags to prevent inaccurate entity resolution.
 
-Run lightweight tests:
+---
 
+## Verification & Testing
+
+Execute unit tests:
 ```bash
 python -m unittest discover -s tests
 ```
 
-Syntax check the dashboard and pipeline modules:
-
+Validate Python module syntax:
 ```bash
 python -m py_compile dashboard_app.py
-python -m py_compile irs_pipeline\ai_categorizer.py
-python -m py_compile irs_pipeline\extractor.py
-python -m py_compile irs_db\exporter.py
+python -m py_compile irs_pipeline/ai_categorizer.py
+python -m py_compile irs_pipeline/extractor.py
+python -m py_compile irs_db/exporter.py
 ```
