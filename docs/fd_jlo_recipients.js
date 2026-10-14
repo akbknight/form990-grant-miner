@@ -1,0 +1,1 @@
+window.FD_JLO_RECIPIENTS = window.FD_JLO_RECIPIENTS || [];

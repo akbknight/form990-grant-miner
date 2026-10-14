@@ -1,0 +1,52 @@
+{
+  "jewish_linkage_recipients": [
+    "jewish_linkage_recipients.js",
+    "jewish_linkage_recipients_part_00.js",
+    "jewish_linkage_recipients_part_01.js",
+    "jewish_linkage_recipients_part_02.js",
+    "jewish_linkage_recipients_part_03.js"
+  ],
+  "jewish_linkage_grants": [
+    "jewish_linkage_grants.js",
+    "jewish_linkage_grants_part_00.js",
+    "jewish_linkage_grants_part_01.js",
+    "jewish_linkage_grants_part_02.js",
+    "jewish_linkage_grants_part_03.js",
+    "jewish_linkage_grants_part_04.js",
+    "jewish_linkage_grants_part_05.js",
+    "jewish_linkage_grants_part_06.js",
+    "jewish_linkage_grants_part_07.js",
+    "jewish_linkage_grants_part_08.js",
+    "jewish_linkage_grants_part_09.js"
+  ],
+  "jewish_linkage_classifications": [
+    "jewish_linkage_classifications.js",
+    "jewish_linkage_classifications_part_00.js",
+    "jewish_linkage_classifications_part_01.js",
+    "jewish_linkage_classifications_part_02.js",
+    "jewish_linkage_classifications_part_03.js",
+    "jewish_linkage_classifications_part_04.js"
+  ],
+  "jewish_linkage_review_queue": [
+    "jewish_linkage_review_queue.js",
+    "jewish_linkage_review_queue_part_00.js",
+    "jewish_linkage_review_queue_part_01.js"
+  ],
+  "jewish_linkage_auto_log": [
+    "jewish_linkage_auto_log.js",
+    "jewish_linkage_auto_log_part_00.js",
+    "jewish_linkage_auto_log_part_01.js",
+    "jewish_linkage_auto_log_part_02.js",
+    "jewish_linkage_auto_log_part_03.js",
+    "jewish_linkage_auto_log_part_04.js"
+  ],
+  "jewish_linkage_top_candidates": [
+    "jewish_linkage_top_candidates.js"
+  ],
+  "jewish_linkage_version_history": [
+    "jewish_linkage_version_history.js"
+  ],
+  "jewish_linkage_meta": [
+    "jewish_linkage_meta.js"
+  ]
+}

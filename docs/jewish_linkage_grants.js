@@ -1,0 +1,1 @@
+window.JEWISH_LINKAGE_GRANTS = window.JEWISH_LINKAGE_GRANTS || [];

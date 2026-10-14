@@ -1,0 +1,1 @@
+window.JEWISH_LINKAGE_AUTO_LOG = window.JEWISH_LINKAGE_AUTO_LOG || [];

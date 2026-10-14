@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <!--
+    AK Bridge Monogram — Favicon (optimized for 16–32px)
+    Bolder strokes relative to canvas for small-size legibility.
+  -->
+  <rect width="32" height="32" rx="7" fill="#E8A020"/>
+  <g stroke="#09090B" fill="none" stroke-width="3">
+    <path d="M6 26 L14 6 L14 26" stroke-linecap="square" stroke-linejoin="miter"/>
+    <line x1="9" y1="18" x2="14" y2="18" stroke-linecap="butt"/>
+    <path d="M27 6 L14 15 L27 26" stroke-linecap="square" stroke-linejoin="miter"/>
+  </g>
+</svg>

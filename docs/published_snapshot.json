@@ -1,0 +1,92 @@
+{
+  "v": 1,
+  "manifest": {
+    "publishedVersion": "v1.0.0",
+    "publishedAt": "2026-06-05T20:09:51.243Z",
+    "publishedBy": {
+      "admin_name": "Deborah Admin",
+      "admin_id": "U-KJI9DHCL",
+      "admin_role": "admin"
+    },
+    "notes": "Seed snapshot baked into deploy",
+    "userSnapshot": {
+      "version_number": "v1.0.0",
+      "size_bytes_estimate": 463
+    },
+    "guestSnapshot": {
+      "version_number": "v1.0.0",
+      "permissions_updated_at": "2026-06-05T20:09:51.244Z"
+    },
+    "manifest_written_at": "2026-06-05T20:09:51.244Z"
+  },
+  "user_snapshot": {
+    "version_number": "v1.0.0",
+    "published_at": "2026-06-05T20:09:51.243Z",
+    "published_by": {
+      "admin_name": "Deborah Admin",
+      "admin_id": "U-KJI9DHCL",
+      "admin_role": "admin"
+    },
+    "notes": "Seed snapshot baked into deploy",
+    "source_files": [],
+    "payload": null,
+    "visible_sections": {
+      "dashboard": {
+        "summary_cards": true,
+        "charts": true,
+        "recipients_table": true,
+        "grants_drilldown": true,
+        "jewish_linkage": true
+      },
+      "insights": {
+        "overview": true,
+        "trends": true,
+        "classification": true,
+        "identity_review": true
+      }
+    }
+  },
+  "guest_snapshot": {
+    "version_number": "v1.0.0",
+    "published_at": "2026-06-05T20:09:51.243Z",
+    "published_by": {
+      "admin_name": "Deborah Admin",
+      "admin_id": "U-KJI9DHCL",
+      "admin_role": "admin"
+    },
+    "notes": "Seed snapshot baked into deploy",
+    "source_files": [],
+    "payload": null,
+    "visible_sections": {
+      "dashboard": {
+        "summary_cards": true,
+        "charts": true,
+        "recipients_table": false,
+        "grants_drilldown": false,
+        "jewish_linkage": false
+      },
+      "insights": {
+        "overview": true,
+        "trends": true,
+        "classification": false,
+        "identity_review": false
+      }
+    },
+    "is_guest": true
+  },
+  "guest_permissions": {
+    "dashboard": {
+      "summary_cards": true,
+      "charts": true,
+      "recipients_table": false,
+      "grants_drilldown": false,
+      "jewish_linkage": false
+    },
+    "insights": {
+      "overview": true,
+      "trends": true,
+      "classification": false,
+      "identity_review": false
+    }
+  }
+}

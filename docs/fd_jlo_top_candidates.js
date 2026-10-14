@@ -1,0 +1,1 @@
+window.FD_JLO_TOP_CANDIDATES = window.FD_JLO_TOP_CANDIDATES || [];

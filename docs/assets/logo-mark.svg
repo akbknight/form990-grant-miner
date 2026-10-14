@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" fill="none">
+  <!--
+    AK Bridge Monogram — Akshay Kumar
+    The A's right side and K's stem share a single vertical stroke.
+    Five strokes: A-left-leg, shared-vertical, crossbar, K-upper-arm, K-lower-arm.
+  -->
+  <g stroke="currentColor" fill="none" stroke-width="11">
+    <path d="M12 104 L54 16 L54 104" stroke-linecap="square" stroke-linejoin="miter"/>
+    <line x1="26" y1="70" x2="54" y2="70" stroke-linecap="butt"/>
+    <path d="M104 16 L54 56 L104 104" stroke-linecap="square" stroke-linejoin="miter"/>
+  </g>
+</svg>
