@@ -22,24 +22,21 @@
     a{color:var(--accent);}
 
     /* HEADER */
-    .header{background:linear-gradient(180deg,rgba(17,23,36,0.99),rgba(14,17,25,0.97));border-bottom:1px solid rgba(50,224,214,0.18);box-shadow:0 18px 60px rgba(0,0,0,0.24),inset 0 -1px 0 rgba(255,255,255,0.03);padding:10px 24px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:nowrap;min-height:184px;position:relative;}
-    .header-title{display:flex;align-items:center;gap:22px;min-width:540px;flex:0 0 auto;}
-    .header-logo-shell{width:184px;height:184px;position:relative;display:grid;place-items:center;flex-shrink:0;border-radius:40px;background:radial-gradient(circle at 50% 38%,rgba(47,238,224,0.18),rgba(31,95,131,0.08) 47%,rgba(0,0,0,0) 74%);overflow:visible;}
-    .header-logo-shell::before{content:"";position:absolute;inset:11px;border-radius:34px;border:1px solid rgba(53,230,219,0.14);box-shadow:0 0 46px rgba(38,225,216,0.15),0 0 70px rgba(94,92,255,0.06),inset 0 0 28px rgba(84,255,234,0.045);}
-    .header-logo-shell::after{content:"";position:absolute;inset:22px;border-radius:24px;background:radial-gradient(circle at 50% 18%,rgba(239,204,107,0.08),rgba(36,232,220,0.045) 42%,transparent 70%);filter:blur(3px);}
-    .header-logo-img{width:168px;height:168px;object-fit:contain;object-position:center;position:relative;z-index:1;image-rendering:-webkit-optimize-contrast;filter:drop-shadow(0 0 9px rgba(236,207,111,0.22)) drop-shadow(0 0 18px rgba(42,241,225,0.45)) drop-shadow(0 0 36px rgba(24,156,202,0.26));}
-    .header-partner{display:flex;align-items:center;gap:12px;flex-shrink:0;padding:0 6px 0 14px;border-left:1px solid rgba(80,180,200,0.15);margin-left:8px;align-self:center;}
-    .partner-logo-shell{width:124px;height:124px;position:relative;display:grid;place-items:center;flex-shrink:0;border-radius:28px;background:radial-gradient(circle at 50% 38%,rgba(231,193,107,0.18),rgba(31,95,131,0.08) 47%,rgba(0,0,0,0) 74%);overflow:visible;}
-    .partner-logo-shell::before{content:"";position:absolute;inset:8px;border-radius:22px;border:1px solid rgba(231,193,107,0.16);box-shadow:0 0 30px rgba(231,193,107,0.14),inset 0 0 18px rgba(231,193,107,0.05);}
-    .partner-logo-img{width:108px;height:108px;object-fit:contain;object-position:center;position:relative;z-index:1;image-rendering:-webkit-optimize-contrast;filter:drop-shadow(0 0 8px rgba(231,193,107,0.32)) drop-shadow(0 0 18px rgba(231,193,107,0.18));}
-    .partner-label{display:flex;flex-direction:column;gap:2px;color:#dfe6f3;font-family:'Satoshi','Inter',-apple-system,sans-serif;}
-    .partner-label .partner-kicker{font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:#9aa4b2;}
-    .partner-label .partner-name{font-size:0.86rem;font-weight:700;letter-spacing:0.02em;color:#f3fbff;line-height:1.15;}
-    @media (max-width: 1100px){.header-partner{display:none;}}
-    .confidential-badge{position:absolute;top:14px;right:300px;display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:8px;background:linear-gradient(135deg,rgba(220,38,38,0.18),rgba(220,38,38,0.08));border:1px solid rgba(248,113,113,0.55);color:#fecaca;font-family:'Satoshi','Inter',-apple-system,sans-serif;font-size:0.72rem;font-weight:900;letter-spacing:0.22em;text-transform:uppercase;text-shadow:0 0 10px rgba(248,113,113,0.35);box-shadow:0 4px 18px rgba(220,38,38,0.18),inset 0 1px 0 rgba(255,255,255,0.06);z-index:5;pointer-events:none;}
-    .confidential-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:#f87171;box-shadow:0 0 8px rgba(248,113,113,0.9),0 0 14px rgba(248,113,113,0.5);animation:cf-pulse 2.4s ease-in-out infinite;}
-    @keyframes cf-pulse{0%,100%{opacity:0.85;}50%{opacity:0.35;}}
-    .confidential-watermark{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);font-family:'Satoshi','Inter',sans-serif;font-size:0.62rem;font-weight:800;letter-spacing:0.32em;color:rgba(254,202,202,0.55);text-transform:uppercase;background:rgba(14,17,25,0.78);border:1px solid rgba(248,113,113,0.28);border-radius:6px;padding:5px 14px;backdrop-filter:blur(6px);pointer-events:none;z-index:1000;white-space:nowrap;}
+    .header{background:linear-gradient(180deg,rgba(17,23,36,0.99),rgba(14,17,25,0.97));border-bottom:1px solid rgba(50,224,214,0.18);box-shadow:0 18px 60px rgba(0,0,0,0.24),inset 0 -1px 0 rgba(255,255,255,0.03);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;min-height:76px;position:relative;}
+    .header-title{display:flex;align-items:center;gap:14px;min-width:auto;flex:0 0 auto;}
+    .header-logo-shell{width:50px;height:50px;position:relative;display:grid;place-items:center;flex-shrink:0;border-radius:12px;background:radial-gradient(circle at 50% 38%,rgba(47,238,224,0.2),rgba(31,95,131,0.12) 47%,rgba(0,0,0,0) 74%);border:1px solid rgba(53,230,219,0.3);box-shadow:0 0 16px rgba(38,225,216,0.18);overflow:hidden;}
+    .header-logo-shell::before,.header-logo-shell::after{display:none;}
+    .header-logo-img{width:42px;height:42px;object-fit:contain;object-position:center;position:relative;z-index:1;image-rendering:-webkit-optimize-contrast;filter:drop-shadow(0 0 6px rgba(42,241,225,0.4));border-radius:8px;}
+    .header-partner{display:flex;align-items:center;gap:10px;flex-shrink:0;padding:0 6px 0 14px;border-left:1px solid rgba(80,180,200,0.15);margin-left:8px;align-self:center;}
+    .partner-logo-shell{width:38px;height:38px;position:relative;display:grid;place-items:center;flex-shrink:0;border-radius:8px;background:rgba(231,193,107,0.1);border:1px solid rgba(231,193,107,0.3);overflow:hidden;}
+    .partner-logo-shell::before{display:none;}
+    .partner-logo-img{width:32px;height:32px;object-fit:contain;object-position:center;position:relative;z-index:1;filter:drop-shadow(0 0 6px rgba(231,193,107,0.28));border-radius:6px;}
+    .partner-label{display:flex;flex-direction:column;gap:1px;color:#dfe6f3;font-family:'Satoshi','Inter',-apple-system,sans-serif;}
+    .partner-label .partner-kicker{font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#9aa4b2;}
+    .partner-label .partner-name{font-size:0.78rem;font-weight:700;letter-spacing:0.02em;color:#f3fbff;line-height:1.15;white-space:nowrap;}
+    @media (max-width: 1200px){.header-partner{display:none;}}
+    .confidential-badge{display:none !important;}
+    .confidential-watermark{display:none !important;}
     .brand-copy{display:flex;flex-direction:column;gap:3px;justify-content:center;}
     .brand-name{font-family:'Satoshi','Inter',-apple-system,sans-serif;font-size:1.5rem;font-weight:900;letter-spacing:0.04em;line-height:1;color:#f3fbff;text-shadow:0 0 18px rgba(44,225,216,0.24);}
     .brand-tagline{font-size:0.68rem;color:#9bc6d7;margin-top:4px;letter-spacing:0.125em;text-transform:uppercase;font-weight:800;}
@@ -48,7 +45,7 @@
     .hstat{min-width:72px;text-align:left;}
     .hstat-val{font-size:0.84rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1.05;}
     .hstat-lbl{font-size:0.52rem;color:var(--text-muted);margin-top:3px;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;}
-    .data-layer-panel{display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-left:auto;min-width:0;flex:1 1 auto;padding-top:14px;}
+    .data-layer-panel{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-left:auto;min-width:0;flex:1 1 auto;padding-top:0;}
     .data-layer-toggle{display:flex;flex:0 0 auto;border:1px solid rgba(118,124,255,0.18);border-radius:10px;overflow:hidden;background:rgba(10,14,30,0.94);box-shadow:0 0 0 1px rgba(255,255,255,0.018),0 12px 28px rgba(0,0,0,0.18);}
     .data-layer-btn{min-height:34px;background:rgba(7,10,23,0.78);border:none;color:#6f7894;padding:7px 10px;font-size:0.7rem;line-height:1;cursor:pointer;transition:all 0.15s;white-space:nowrap;box-shadow:none;}
     .data-layer-btn+.data-layer-btn{border-left:1px solid rgba(118,124,255,0.12);}
@@ -392,11 +389,9 @@
     @media(max-width:600px){
       .stat-cards{grid-template-columns:1fr 1fr;}
       .header-stats{display:none;}
-      .header{min-height:148px;padding:8px 14px;}
-      .header-logo-shell{width:128px;height:128px;border-radius:32px;}
-      .header-logo-img{width:116px;height:116px;}
-      .confidential-badge{top:8px;right:10px;padding:5px 10px;font-size:0.62rem;letter-spacing:0.16em;}
-      .confidential-watermark{font-size:0.54rem;letter-spacing:0.22em;padding:4px 10px;bottom:8px;}
+      .header{min-height:64px;padding:8px 14px;}
+      .header-logo-shell{width:42px;height:42px;border-radius:10px;}
+      .header-logo-img{width:36px;height:36px;}
       .data-layer-panel{width:100%;margin-left:0;}
       .data-layer-toggle{width:100%;}
       .data-layer-btn{flex:1;}
@@ -854,7 +849,7 @@
 body.role-user [data-admin-only="true"],body.role-user .admin-only,body.role-user .admin-write-action,
 body.role-user #adminMasterBanner,body.role-user #portalDiagnosticPanel,body.role-user #navAdmin,body.role-user #navUpdates,
 body.role-user #adminView,body.role-user #adminUpdatesView,body.role-user #acPublishPrimary,body.role-user #acPublishStatusBanner{display:none !important}
-body.role-admin header .confidential-badge,body.role-user header .confidential-badge{display:none !important}
+body.role-admin header .confidential-badge,body.role-user header .confidential-badge,.confidential-badge,.confidential-watermark{display:none !important}
 </style>
 </head>
 <body>
@@ -926,10 +921,9 @@ body.role-admin header .confidential-badge,body.role-user header .confidential-b
 
 <!-- HEADER -->
 <header class="header">
-  <div class="confidential-badge" role="note" aria-label="Confidential document">Confidential</div>
   <div class="header-title">
     <div class="header-logo-shell" aria-label="DEBORAH network intelligence logo">
-      <img class="header-logo-img" src="assets/logo-contained.svg" alt="Akshay Kumar Monogram" style="width:42px;height:42px;border-radius:8px;">
+      <img class="header-logo-img" src="assets/logo-contained.svg" alt="Akshay Kumar Monogram">
     </div>
     <div class="brand-copy">
       <h1 class="brand-name">DEBORAH</h1>
@@ -1590,6 +1584,7 @@ body.role-admin header .confidential-badge,body.role-user header .confidential-b
 <footer>
   <span>Grant Atlas 990 &amp; Deborah Philanthropic Intelligence Engine</span>
   &nbsp;·&nbsp; Developed &amp; Engineered by Akshay Kumar (@akbknight)
+  &nbsp;·&nbsp; <span style="color:#f87171;font-weight:700;letter-spacing:0.04em;">CONFIDENTIAL: INTERNAL &amp; AUTHORIZED USE ONLY</span>
   &nbsp;·&nbsp; Data: 2018–2025 &nbsp;·&nbsp; All Rights Reserved
 </footer>
 
@@ -5279,7 +5274,5 @@ document.addEventListener('keydown',e=>{
 <script defer src="admin_supabase.js?v=20261005-sba2"></script>
 <script defer src="pledge_learning_rules.js?v=20260519-pledge1"></script>
 
-<!-- Confidentiality footer watermark -->
-<div class="confidential-watermark" aria-hidden="true">Confidential · Internal & Investor Use Only</div>
 </body>
 </html>

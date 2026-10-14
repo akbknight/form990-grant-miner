@@ -407,6 +407,7 @@
         };
         saveSession(sess);
       }
+      try { document.body.classList.add('role-'+sess.role); } catch(_){}
       // Authenticated path
       hardenSetTopView();
       if(sess.role === 'admin'){
@@ -464,6 +465,8 @@
     // Restore the top-nav bar if showLogin/stripAdminDom hid it
     var topNav = document.querySelector('.top-nav');
     if(topNav && topNav.style && topNav.style.display === 'none'){ topNav.style.display = ''; }
+    var chrome = document.getElementById('portalHeaderChrome');
+    if(chrome && chrome.style && chrome.style.display === 'none'){ chrome.style.display = ''; }
     console.log('[PORTAL_AUTH] restoreAdminChrome done');
   }
 
@@ -495,6 +498,7 @@
   function mountAdminBanner(sess){
     var existing = document.getElementById('adminMasterBanner');
     if(existing) existing.remove();
+    try { if(sessionStorage.getItem('deborah_admin_banner_dismissed') === '1') return; } catch(_){}
     var pub = null;
     try { pub = window.PUBLISHED_DATA && window.PUBLISHED_DATA.getCurrent(); } catch(_){}
     var banner = document.createElement('div');
@@ -512,7 +516,7 @@
       var btn = document.getElementById('adminMasterPublishBtn');
       if(btn){ btn.onclick = function(){ runPublishToUserPortal(); }; }
       var dismiss = document.getElementById('adminMasterDismissBtn');
-      if(dismiss){ dismiss.onclick = function(){ banner.remove(); }; }
+      if(dismiss){ dismiss.onclick = function(){ try{ sessionStorage.setItem('deborah_admin_banner_dismissed','1'); }catch(_){} banner.remove(); }; }
     } else {
       banner.style.cssText = baseCss + 'background:rgba(31,111,139,0.12);border:1px solid rgba(31,111,139,0.4);color:#9ed3e0;';
       banner.innerHTML =
@@ -523,7 +527,7 @@
       var rbtn = document.getElementById('adminMasterRepublishBtn');
       if(rbtn){ rbtn.onclick = function(){ runPublishToUserPortal({ force:true }); }; }
       var dismiss2 = document.getElementById('adminMasterDismissBtn');
-      if(dismiss2){ dismiss2.onclick = function(){ banner.remove(); }; }
+      if(dismiss2){ dismiss2.onclick = function(){ try{ sessionStorage.setItem('deborah_admin_banner_dismissed','1'); }catch(_){} banner.remove(); }; }
     }
   }
 
@@ -758,21 +762,32 @@
     if(document.getElementById('portalHeaderChrome')) return;
     var chrome = document.createElement('div');
     chrome.id = 'portalHeaderChrome';
-    chrome.style.cssText = 'position:fixed;top:14px;right:18px;z-index:9000;display:flex;gap:10px;align-items:center;font:500 12px -apple-system,sans-serif;color:#f3fbff;';
+    chrome.className = 'portal-header-bar';
+    chrome.style.cssText = 'position:relative;width:100%;background:rgba(8,12,22,0.98);border-bottom:1px solid rgba(50,224,214,0.14);padding:8px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font:500 11.5px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#f3fbff;box-sizing:border-box;z-index:9000;';
     var pub = window.PUBLISHED_DATA && window.PUBLISHED_DATA.getCurrent();
     var verLabel = pub ? (pub.version_number + ' · ' + new Date(pub.published_at).toISOString().replace('T',' ').replace(/\..*/, ' UTC')) : 'No published version';
     chrome.innerHTML = ''+
-      '<span style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);padding:5px 10px;border-radius:20px;letter-spacing:.04em;">'+
-        'CONFIDENTIAL · Authorized Users Only'+
-      '</span>'+
-      '<span style="background:rgba(184,137,58,0.18);border:1px solid rgba(184,137,58,0.4);padding:5px 10px;border-radius:20px;color:#f6c878;letter-spacing:.04em;">'+
-        escH(sess.role.toUpperCase())+' · '+escH(sess.name)+
-      '</span>'+
-      '<span style="background:rgba(31,111,139,0.18);border:1px solid rgba(31,111,139,0.4);padding:5px 10px;border-radius:20px;color:#9ed3e0;" id="portalVersionChip">'+
-        'Published: '+escH(verLabel)+
-      '</span>'+
-      '<button onclick="window.PORTAL_AUTH.logout()" style="background:#a12c2c;color:#fff;border:none;padding:6px 14px;border-radius:6px;font:600 12px -apple-system,sans-serif;cursor:pointer;">Logout</button>';
-    document.body.appendChild(chrome);
+      '<div style="display:flex;align-items:center;gap:8px;">'+
+        '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(220,38,38,0.2),rgba(220,38,38,0.08));border:1px solid rgba(248,113,113,0.45);color:#fecaca;padding:3px 10px;border-radius:12px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;">'+
+          '<span style="width:6px;height:6px;border-radius:50%;background:#f87171;box-shadow:0 0 6px #f87171;"></span>'+
+          'CONFIDENTIAL · AUTHORIZED PLATFORM ACCESS ONLY'+
+        '</span>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'+
+        '<span style="background:rgba(184,137,58,0.18);border:1px solid rgba(184,137,58,0.45);padding:3px 10px;border-radius:12px;color:#f6c878;font-size:11px;font-weight:700;letter-spacing:.03em;">'+
+          escH(sess.role.toUpperCase())+' · '+escH(sess.name)+
+        '</span>'+
+        '<span style="background:rgba(31,111,139,0.18);border:1px solid rgba(31,111,139,0.45);padding:3px 10px;border-radius:12px;color:#9ed3e0;font-size:11px;" id="portalVersionChip">'+
+          'Published: '+escH(verLabel)+
+        '</span>'+
+        '<button onclick="window.PORTAL_AUTH.logout()" style="background:#a12c2c;color:#fff;border:none;padding:4px 12px;border-radius:5px;font:600 11px -apple-system,sans-serif;cursor:pointer;letter-spacing:.03em;transition:opacity 0.2s;">Logout</button>'+
+      '</div>';
+    var hdr = document.querySelector('header.header');
+    if(hdr && hdr.parentNode){
+      hdr.parentNode.insertBefore(chrome, hdr);
+    } else {
+      document.body.insertBefore(chrome, document.body.firstChild);
+    }
   }
 
   function escH(s){
@@ -798,6 +813,8 @@
     });
     var hdr = document.querySelector('header.header');
     if(hdr) hdr.style.display = 'none';
+    var chrome = document.getElementById('portalHeaderChrome');
+    if(chrome) chrome.style.display = 'none';
     // If a login screen is already mounted, do not double-mount
     var existing = document.getElementById('portalLoginWrap');
     if(existing){

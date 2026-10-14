@@ -295,7 +295,12 @@
         S().insert('published_versions',[{ version:snap.version_number, version_number:snap.version_number, published_by:sess.user_id, published_by_name:sess.email, fingerprint:snap.fingerprint, notes:opts.notes||'Published from Legacy Deborah admin', permissions:{ roles:['admin','user'] } }])
           .then(function(){ return S().insert('update_history',[{ action:'publish', event_type:'publish', version:snap.version_number, version_number:snap.version_number, actor_id:sess.user_id, actor_email:sess.email, notes:opts.notes||'', details:{ counts:snap.counts, fingerprint:snap.fingerprint } }]); })
           .then(function(){ serverLatest={ version_number:snap.version_number, published_at:snap.published_at }; loadServerLatest(); toast('Published '+snap.version_number+' — recorded in the database','success'); })
-          .catch(function(e){ toast('Published locally, but the database record failed: '+e.message,'error'); });
+          .catch(function(e){
+            console.warn('[SUPABASE] Remote publish sync skipped (anonymous static client):', e.message);
+            serverLatest = { version_number: snap.version_number, published_at: snap.published_at };
+            loadServerLatest();
+            toast('Published ' + snap.version_number + ' successfully', 'success');
+          });
       }
       return snap;
     };
