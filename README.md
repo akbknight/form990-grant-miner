@@ -1,16 +1,16 @@
-# Grant Atlas 990 & Deborah Philanthropic Intelligence Platform
+# IRS Form 990 Grant Intelligence Platform & Bulk ETL Pipeline
 
 [![IRS 990 Mining Engine](https://img.shields.io/badge/IRS%20990-XML%20Bulk%20Extraction-blue.svg)](https://github.com/akbknight/form990-grant-miner)
 [![GitHub Pages](https://img.shields.io/badge/Live%20Platform-GitHub%20Pages-success.svg)](https://akbknight.github.io/form990-grant-miner/)
-[![Coverage](https://img.shields.io/badge/Filings%20Ingested-9.7M%2B%20Filings-emerald.svg)](https://akbknight.github.io/form990-grant-miner/#/pipeline)
-[![Capital Extracted](https://img.shields.io/badge/Charitable%20Capital-%24550.2B%20Extracted-amber.svg)](https://akbknight.github.io/form990-grant-miner/#/dashboard)
-[![Zero API Extraction](https://img.shields.io/badge/Core%20ETL-Zero%20API%20Cost-indigo.svg)](https://github.com/akbknight/form990-grant-miner)
+[![Coverage](https://img.shields.io/badge/Filings%20Indexed-9.7M%2B%20Filings-emerald.svg)](https://akbknight.github.io/form990-grant-miner/#/pipeline)
+[![Taxonomy](https://img.shields.io/badge/Taxonomy-12%20Philanthropic%20Sectors-indigo.svg)](https://akbknight.github.io/form990-grant-miner/#/sectors)
+[![Zero API Extraction](https://img.shields.io/badge/Core%20ETL-Zero%20API%20Cost-gray.svg)](https://github.com/akbknight/form990-grant-miner)
 
-An institutional-grade data engineering and philanthropic intelligence platform for extracting, warehousing, and analyzing grant disbursements from IRS Form 990 electronic XML filings (2019–2024).
+An end-to-end Python data pipeline and philanthropic intelligence platform for extracting, warehousing, and analyzing grant disbursements from IRS Form 990 electronic XML filings (2019–2024). Standardizes multi-year institutional grant distribution, recipient taxonomies, and charitable capital flows across the United States.
 
 The platform operates across two synchronized pillars:
-1. **High-Throughput Python ETL Engine**: Streams bulk IRS S3 electronic filing ZIP archives directly in memory without disk thrash, parsing Schedule I grants across legacy and modern XML schemas into SQLite, DuckDB, and PostgreSQL.
-2. **Grant Atlas & Deborah Analytics Platform (`docs/`)**: An interactive, zero-dependency client Single Page Application deployed to GitHub Pages, featuring multi-view exploration across 12 sectors, funder–recipient relationship cohorts, DAF flow tracing, and a priority Decision Center for mixed/unresolved grant classifications.
+1. **High-Throughput Streaming ETL Engine**: Streams bulk IRS S3 electronic filing ZIP archives directly in memory without disk thrash, parsing Schedule I / Part IX grant records across legacy and modern XML schemas into SQLite, DuckDB, and PostgreSQL.
+2. **Grant Atlas Analytics Platform (`docs/`)**: An interactive Single Page Application deployed to GitHub Pages, featuring multi-view exploration across 12 sectors (Higher Education, Health, Public Policy, Environment, Community Welfare), funder–recipient relationship cohorts, DAF pass-through flow tracing, and a priority Decision Center for grant classification governance.
 
 ---
 
@@ -155,6 +155,7 @@ python -m irs_db.exporter --csv --filter "grant_amount>=100000"
 ├── dashboard/                    # Data access and presentation helpers
 ├── irs_db/                       # PostgreSQL schema, loader, exporter, downloader
 ├── irs_pipeline/                 # S3 audit/downloader, extractor, AI categorizer
+├── scripts/                      # Dedicated data preparation, export, and migration utilities
 ├── standalone_pipeline/          # Self-contained SQLite pipeline
 ├── master_pipeline.py            # High-speed in-memory ZIP bulk extractor
 ├── sqlite_to_postgres.py         # Transactional SQLite to PostgreSQL transfer utility
@@ -194,3 +195,16 @@ python -m py_compile irs_pipeline/ai_categorizer.py
 python -m py_compile irs_pipeline/extractor.py
 python -m py_compile irs_db/exporter.py
 ```
+
+---
+
+## 👤 Author & Strategic Portfolio
+
+**Akshay Kumar**  
+STEM MBA Candidate · Business Analytics & AI · American University Kogod School of Business  
+Business Analyst, U.S. Embassy, India  
+- **Executive Portfolio:** [https://akbknight.github.io/](https://akbknight.github.io/)  
+- **LinkedIn Profile:** [linkedin.com/in/akshaykumardl](https://www.linkedin.com/in/akshaykumardl/)  
+- **Direct Résumé:** [Download PDF (369 KB)](https://akbknight.github.io/assets/Akshay_Resume.pdf)  
+- **Email:** [ak8335a@american.edu](mailto:ak8335a@american.edu)
+
